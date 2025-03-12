@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edge Redirector Settings</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo {
+      width: 48px;
+      height: 48px;
+      margin-right: 15px;
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .section {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+      font-weight: 500;
+      color: #0078D4;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      margin-right: 10px;
+    }
+    
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 24px;
+      transition: .3s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      border-radius: 50%;
+      transition: .3s;
+    }
+    
+    input:checked + .slider {
+      background-color: #0078D4;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    select, input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    .domain-list {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+    
+    .domain-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .domain-item:last-child {
+      border-bottom: none;
+    }
+    
+    .domain-text {
+      font-family: monospace;
+    }
+    
+    .wildcard {
+      color: #0078D4;
+      font-weight: 500;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .edit-btn, .remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 5px 8px;
+      border-radius: 4px;
+    }
+    
+    .edit-btn {
+      color: #0078D4;
+    }
+    
+    .edit-btn:hover {
+      background-color: #f0f7ff;
+    }
+    
+    .remove-btn {
+      color: #d32f2f;
+    }
+    
+    .remove-btn:hover {
+      background-color: #fff0f0;
+    }
+    
+    .add-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .add-input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    
+    .button {
+      padding: 8px 16px;
+      background-color: #0078D4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .button:hover {
+      background-color: #0063b1;
+    }
+    
+    .button.secondary {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+    
+    .button.secondary:hover {
+      background-color: #e0e0e0;
+    }
+    
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 100%;
+    }
+    
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .help-text {
+      color: #666;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    
+    .note {
+      background-color: #f8f9fa;
+      border-left: 4px solid #0078D4;
+      padding: 10px 15px;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="images/icon48.png" class="logo" alt="Edge Redirector">
+    <h1>Edge Redirector Settings</h1>
+  </div>
+  
+  <div class="section">
+    <h2>Extension Status</h2>
+    <div class="toggle-container">
+      <label class="toggle">
+        <input type="checkbox" id="extensionToggle">
+        <span class="slider"></span>
+      </label>
+      <span id="statusText">Extension is active</span>
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>Redirect Settings</h2>
+    <div class="form-group">
+      <label for="redirectMethod">Redirect Method:</label>
+      <select id="redirectMethod">
+        <option value="protocol">Browser Protocol (recommended)</option>
+        <option value="native">Native Application (experimental)</option>
+      </select>
+      <p class="help-text">The browser protocol method works on most systems, especially macOS.</p>
+    </div>
+    
+    <div class="note">
+      <strong>Note:</strong> On Windows, the extension uses the microsoft-edge:// protocol to redirect. On other operating systems, results may vary.
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>Manage Domains</h2>
+    <p>Add domains that should be redirected to Microsoft Edge. Use the * wildcard for subdomains (e.g., *.example.com).</p>
+    
+    <form id="addDomainForm" class="add-form">
+      <input type="text" id="newDomain" class="add-input" placeholder="example.com or *.example.com">
+      <button type="submit" class="button">Add Domain</button>
+    </form>
+    
+    <div id="domainList" class="domain-list">
+      <!-- Domains will be inserted here -->
+    </div>
+    
+    <div id="bulkImportBtn" class="button secondary">Bulk Import/Export</div>
+  </div>
+  
+  <div class="footer">
+    <div id="lastSaved" class="help-text">Last saved: Never</div>
+    <div>
+      <button id="resetBtn" class="button secondary">Reset to Defaults</button>
+      <button id="saveBtn" class="button">Save Changes</button>
+    </div>
+  </div>
+  
+  <!-- Edit Domain Modal -->
+  <div id="editModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Edit Domain</h2>
+      <div class="form-group">
+        <label for="editDomainInput">Domain:</label>
+        <input type="text" id="editDomainInput" class="add-input">
+        <p class="help-text">Use * for wildcards (e.g., *.example.com)</p>
+      </div>
+      <div class="modal-actions">
+        <button id="cancelEditBtn" class="button secondary">Cancel</button>
+        <button id="saveEditBtn" class="button">Save</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bulk Import/Export Modal -->
+  <div id="bulkModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Bulk Import/Export</h2>
+      <div class="form-group">
+        <label for="bulkTextarea">Domains (one per line):</label>
+        <textarea id="bulkTextarea" style="width: 100%; height: 200px; font-family: monospace; padding: 8px; box-sizing: border-box;"></textarea>
+        <p class="help-text">Enter one domain per line. Use * for wildcards (e.g., *.example.com)</p>
+      </div>
+      <div class="modal-actions">
+        <button id="cancelBulkBtn" class="button secondary">Cancel</button>
+        <button id="saveBulkBtn" class="button">Import</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html>
